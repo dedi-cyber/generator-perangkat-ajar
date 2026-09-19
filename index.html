@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KBC Deep Learning Generator - Perangkat Pembelajaran Kurikulum Berbasis Cinta</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Marked JS for Markdown Parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emerald: {
+                            850: '#064e3b',
+                            900: '#022c22',
+                            950: '#011c16',
+                        },
+                        gold: {
+                            100: '#fef3c7',
+                            300: '#fcd34d',
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
+                            800: '#92400e',
+                        },
+                        parchment: '#fcfbf7'
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        arabic: ['Amiri', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Islamic Pattern Background & Decorative Accents */
+        body {
+            background-color: #011c16;
+            background-image: radial-gradient(#10b981 0.5px, transparent 0.5px), radial-gradient(#f59e0b 0.5px, #011c16 0.5px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .gold-border {
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.08);
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #fef3c7 0%, #f59e0b 50%, #b45309 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gold-button {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            transition: all 0.3s ease;
+        }
+        .gold-button:hover {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .emerald-card {
+            background: rgba(2, 44, 34, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .prose table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            color: #e2e8f0;
+        }
+        .prose th, .prose td {
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            padding: 0.75rem 1rem;
+            text-align: left;
+        }
+        .prose th {
+            background-color: rgba(6, 78, 59, 0.8);
+            color: #fcd34d;
+            font-weight: 600;
+        }
+        .prose td {
+            background-color: rgba(2, 44, 34, 0.4);
+        }
+        .prose h1, .prose h2, .prose h3 {
+            color: #fcd34d;
+            margin-top: 1.25rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        .prose h2 { font-size: 1.35rem; border-bottom: 1px solid rgba(245, 158, 11, 0.3); padding-bottom: 0.25rem; }
+        .prose h3 { font-size: 1.15rem; color: #10b981; }
+        .prose ul, .prose ol { padding-left: 1.5rem; margin-top: 0.5rem; margin-bottom: 0.5rem; }
+        .prose ul { list-style-type: disc; }
+        .prose ol { list-style-type: decimal; }
+        .prose p { margin-bottom: 0.75rem; line-height: 1.6; }
+        .prose strong { color: #fef3c7; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #011c16;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #047857;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f59e0b;
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .print-area {
+                background: white !important;
+                color: black !important;
+                border: none !important;
+                box-shadow: none !important;
+            }
+            .prose th {
+                background-color: #f3f4f6 !important;
+                color: #111827 !important;
+            }
+            .prose td {
+                background-color: white !important;
+                color: #1f2937 !important;
+            }
+            .prose h1, .prose h2, .prose h3, .prose strong {
+                color: #064e3b !important;
+            }
+        }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col">
+
+    <!-- Header Navbar -->
+    <header class="emerald-card border-b border-emerald-800/50 sticky top-0 z-40 px-4 py-3 shadow-2xl">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-full bg-gradient-to-tr from-emerald-800 via-emerald-600 to-gold-500 p-[2px] flex items-center justify-center shadow-lg">
+                    <div class="w-full h-full bg-emerald-950 rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-kaaba text-gold-400 text-lg"></i>
+                    </div>
+                </div>
+                <div>
+                    <h1 class="font-arabic text-2xl text-gold-300 font-bold leading-tight">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</h1>
+                    <p class="text-xs text-emerald-300 tracking-wide font-medium">Perancang Perangkat Pembelajaran KBC & Deep Learning (TK/RA - SMA/MA)</p>
+                </div>
+            </div>
+
+            <!-- Header Quick Actions -->
+            <div class="flex items-center gap-2 flex-wrap">
+                <button onclick="openModal('kbcInfoModal')" class="px-3 py-1.5 rounded-lg text-xs bg-emerald-900/80 border border-emerald-600/40 text-emerald-200 hover:text-gold-300 hover:border-gold-500 transition flex items-center gap-2">
+                    <i class="fa-solid fa-heart text-rose-400"></i>
+                    <span>Panduan Panca Cinta</span>
+                </button>
+                <button onclick="loadSamplePreset()" class="px-3 py-1.5 rounded-lg text-xs bg-gold-600/20 border border-gold-500/40 text-gold-300 hover:bg-gold-600/30 transition flex items-center gap-2">
+                    <i class="fa-solid fa-wand-magic-sparkles text-gold-400"></i>
+                    <span>Muat Contoh TK/RA</span>
+                </button>
+                <button onclick="resetAllData()" class="px-3 py-1.5 rounded-lg text-xs bg-rose-950/40 border border-rose-800/40 text-rose-300 hover:bg-rose-900/60 transition flex items-center gap-2">
+                    <i class="fa-solid fa-rotate-left"></i>
+                    <span>Reset</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto w-full px-4 py-6 flex-1 flex flex-col gap-6">
+
+        <!-- Panca Cinta Pills Bar -->
+        <div class="emerald-card rounded-2xl p-4 border border-gold-500/30 shadow-xl bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-3 mb-3">
+                <div class="flex items-center gap-2 text-gold-400 font-semibold text-sm">
+                    <i class="fa-solid fa-star-and-crescent text-lg"></i>
+                    <span>Integrasi Panca Cinta Kurikulum Berbasis Cinta (KBC)</span>
+                </div>
+                <span class="text-xs text-emerald-300 italic">Harmonisasi Deep Learning (Mindful, Meaningful, Joyful)</span>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+                <div class="bg-emerald-900/60 border border-emerald-700/50 rounded-xl p-2.5 flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-300 flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-hands-praying text-sm"></i>
+                    </div>
+                    <div>
+                        <div class="text-[11px] text-amber-200 font-bold">Cinta 1</div>
+                        <div class="text-xs text-slate-200 font-medium">Allah & Rasul-Nya</div>
+                    </div>
+                </div>
+
+                <div class="bg-emerald-900/60 border border-emerald-700/50 rounded-xl p-2.5 flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-sky-500/20 text-sky-300 flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-book-open text-sm"></i>
+                    </div>
+                    <div>
+                        <div class="text-[11px] text-sky-200 font-bold">Cinta 2</div>
+                        <div class="text-xs text-slate-200 font-medium">Cinta Ilmu</div>
+                    </div>
+                </div>
+
+                <div class="bg-emerald-900/60 border border-emerald-700/50 rounded-xl p-2.5 flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-rose-500/20 text-rose-300 flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-people-holding-hands text-sm"></i>
+                    </div>
+                    <div>
+                        <div class="text-[11px] text-rose-200 font-bold">Cinta 3</div>
+                        <div class="text-xs text-slate-200 font-medium">Diri & Sesama</div>
+                    </div>
+                </div>
+
+                <div class="bg-emerald-900/60 border border-emerald-700/50 rounded-xl p-2.5 flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-300 flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-seedling text-sm"></i>
+                    </div>
+                    <div>
+                        <div class="text-[11px] text-emerald-200 font-bold">Cinta 4</div>
+                        <div class="text-xs text-slate-200 font-medium">Alam & Lingkungan</div>
+                    </div>
+                </div>
+
+                <div class="bg-emerald-900/60 border border-emerald-700/50 rounded-xl p-2.5 flex items-center gap-2.5 col-span-2 sm:col-span-1">
+                    <div class="w-8 h-8 rounded-lg bg-red-500/20 text-red-300 flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-flag text-sm"></i>
+                    </div>
+                    <div>
+                        <div class="text-[11px] text-red-200 font-bold">Cinta 5</div>
+                        <div class="text-xs text-slate-200 font-medium">Cinta Tanah Air</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Layout Grid: Form Context (Left) + Steps / Output (Right) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+            <!-- LEFT PANEL: Context Input Form -->
+            <section class="lg:col-span-4 emerald-card rounded-2xl p-5 border border-emerald-700/50 shadow-xl space-y-4 sticky top-20 max-h-[85vh] overflow-y-auto">
+                <div class="flex items-center justify-between border-b border-emerald-800/80 pb-3">
+                    <h2 class="font-bold text-gold-300 text-lg flex items-center gap-2">
+                        <i class="fa-solid fa-sliders text-gold-400"></i>
+                        <span>Parameter Pembelajaran</span>
+                    </h2>
+                    <span class="text-xs px-2.5 py-1 bg-emerald-900/80 border border-emerald-600/40 rounded-full text-emerald-300">Konfigurasi</span>
+                </div>
+
+                <!-- SECTION 1: Identitas Lembaga & Pengajar -->
+                <div class="bg-emerald-950/60 border border-emerald-800/80 rounded-xl p-3 space-y-2.5">
+                    <div class="text-gold-400 font-semibold text-xs flex items-center gap-1.5 border-b border-emerald-800/50 pb-1.5">
+                        <i class="fa-solid fa-id-card text-emerald-400"></i>
+                        <span>Identitas Lembaga & Pengajar</span>
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-slate-300 text-[11px] mb-0.5">Nama Sekolah / Madrasah / RA <span class="text-rose-400">*</span></label>
+                        <input type="text" id="inputNamaSekolah" placeholder="Contoh: RA Perwanida / TK Islam Al-Azhar" class="w-full bg-emerald-900/80 border border-emerald-700 rounded-lg px-2.5 py-1.5 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-gold-500 transition text-xs">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block font-semibold text-slate-300 text-[11px] mb-0.5">Nama Guru <span class="text-rose-400">*</span></label>
+                            <input type="text" id="inputNamaGuru" placeholder="Nama & Gelar Guru" class="w-full bg-emerald-900/80 border border-emerald-700 rounded-lg px-2.5 py-1.5 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-gold-500 transition text-xs">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-300 text-[11px] mb-0.5">NIP Guru</label>
+                            <input type="text" id="inputNipGuru" placeholder="NIP / NPY / -" class="w-full bg-emerald-900/80 border border-emerald-700 rounded-lg px-2.5 py-1.5 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-gold-500 transition text-xs">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block font-semibold text-slate-300 text-[11px] mb-0.5">Nama Kepala RA/Sekolah <span class="text-rose-400">*</span></label>
+                            <input type="text" id="inputNamaKepala" placeholder="Nama Kepala RA/Sekolah" class="w-full bg-emerald-900/80 border border-emerald-700 rounded-lg px-2.5 py-1.5 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-gold-500 transition text-xs">
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-300 text-[11px] mb-0.5">NIP Kepala</label>
+                            <input type="text" id="inputNipKepala" placeholder="NIP / NPY / -" class="w-full bg-emerald-900/80 border border-emerald-700 rounded-lg px-2.5 py-1.5 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-gold-500 transition text-xs">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 2: Kurikulum & Topik -->
+                <div class="space-y-3 text-xs">
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1">Mata Pelajaran / Elemen <span class="text-rose-400">*</span></label>
+                        <input type="text" id="inputMapel" placeholder="Contoh: Nilai Agama & Budi Pekerti, IPAS, PAI..." class="w-full bg-emerald-950/80 border border-emerald-700 rounded-xl px-3 py-2 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-gold-500 transition">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block font-semibold text-slate-300 mb-1">Jenjang <span class="text-rose-400">*</span></label>
+                            <select id="inputJenjang" onchange="updateKelasOptions()" class="w-full bg-emerald-950/80 border border-emerald-700 rounded-xl px-2.5 py-2 text-slate-100 focus:outline-none focus:border-gold-500 transition">
+                                <option value="TK">TK / RA / PAUD</option>
+                                <option value="SD" selected>SD / MI</option>
+                                <option value="SMP">SMP / MTs</option>
+                                <option value="SMA">SMA / MA</option>
+                                <option value="SMK">SMK</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-300 mb-1">Kelas / Kelompok <span class="text-rose-400">*</span></label>
+                            <select id="inputKelas" class="w-full bg-emerald-950/80 border border-emerald-700 rounded-xl px-2.5 py-2 text-slate-100 focus:outline-none focus:border-gold-500 transition">
+                                <option value="Kelas 4">Kelas 4</option>
+                                <option value="Kelas 5">Kelas 5</option>
+                                <option value="Kelas 6">Kelas 6</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1">Topik / Subtopik / Tema <span class="text-rose-400">*</span></label>
+                        <input type="text" id="inputTopik" placeholder="Contoh: Aku Sayang Ciptaan Allah / Ekosistem Sekolah..." class="w-full bg-emerald-950/80 border border-emerald-700 rounded-xl px-3 py-2 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-gold-500 transition">
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1">Capaian Pembelajaran (CP) Utuh <span class="text-rose-400">*</span></label>
+                        <textarea id="inputCP" rows="4" placeholder="Salin Teks Capaian Pembelajaran dari Kurikulum Merdeka / KBC di sini..." class="w-full bg-emerald-950/80 border border-emerald-700 rounded-xl p-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-gold-500 transition text-xs leading-relaxed"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-slate-300 mb-1">Fokus Panca Cinta Prioritas (Bisa Pilih >1)</label>
+                        <div class="grid grid-cols-2 gap-1.5 text-[11px]">
+                            <label class="flex items-center gap-1.5 p-1.5 bg-emerald-950/50 rounded-lg cursor-pointer hover:bg-emerald-900/40">
+                                <input type="checkbox" name="pancaCintaFocus" value="Cinta Allah & Rasul-Nya" checked class="accent-gold-500">
+                                <span class="text-slate-300">1. Allah & Rasul</span>
+                            </label>
+                            <label class="flex items-center gap-1.5 p-1.5 bg-emerald-950/50 rounded-lg cursor-pointer hover:bg-emerald-900/40">
+                                <input type="checkbox" name="pancaCintaFocus" value="Cinta Ilmu" checked class="accent-gold-500">
+                                <span class="text-slate-300">2. Cinta Ilmu</span>
+                            </label>
+                            <label class="flex items-center gap-1.5 p-1.5 bg-emerald-950/50 rounded-lg cursor-pointer hover:bg-emerald-900/40">
+                                <input type="checkbox" name="pancaCintaFocus" value="Cinta Diri & Sesama" checked class="accent-gold-500">
+                                <span class="text-slate-300">3. Diri & Sesama</span>
+                            </label>
+                            <label class="flex items-center gap-1.5 p-1.5 bg-emerald-950/50 rounded-lg cursor-pointer hover:bg-emerald-900/40">
+                                <input type="checkbox" name="pancaCintaFocus" value="Cinta Alam & Lingkungan" checked class="accent-gold-500">
+                                <span class="text-slate-300">4. Alam & Env</span>
+                            </label>
+                            <label class="flex items-center gap-1.5 p-1.5 bg-emerald-950/50 rounded-lg cursor-pointer hover:bg-emerald-900/40 col-span-2">
+                                <input type="checkbox" name="pancaCintaFocus" value="Cinta Tanah Air" checked class="accent-gold-500">
+                                <span class="text-slate-300">5. Cinta Tanah Air</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Button Chain All -->
+                <div class="pt-2">
+                    <button onclick="startChainProcess()" id="btnChainAll" class="w-full gold-button text-slate-950 font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 shadow-lg text-xs tracking-wider uppercase">
+                        <i class="fa-solid fa-arrows-spin text-sm"></i>
+                        <span>Jalankan Semua Chain (9 Langkah)</span>
+                    </button>
+                    <p class="text-[10px] text-center text-emerald-400/80 mt-1.5">Memproses secara otomatis dari Analisis CP hingga Asesmen Diagnostik.</p>
+                </div>
+            </section>
+
+            <!-- RIGHT PANEL: Steps Stepper & Output Area -->
+            <section class="lg:col-span-8 flex flex-col gap-4">
+
+                <!-- Step Tabs Bar -->
+                <div class="emerald-card rounded-2xl p-3 border border-emerald-700/50 shadow-xl overflow-x-auto">
+                    <div class="flex items-center gap-2 min-w-max" id="stepsTabNav">
+                        <!-- Step Tabs JS Dynamic Rendering -->
+                    </div>
+                </div>
+
+                <!-- Current Step Header Banner -->
+                <div class="emerald-card rounded-2xl p-5 border border-gold-500/30 shadow-xl relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span id="currentStepBadge" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-gold-500/20 text-gold-300 border border-gold-500/40">Tahap 1 / 9</span>
+                            <span id="currentStepPancaCintaTag" class="text-xs text-emerald-300 font-medium">🌺 KBC Deep Learning</span>
+                        </div>
+                        <h3 id="currentStepTitle" class="text-xl font-bold text-gold-300">🌺 ANALISIS CAPAIAN PEMBELAJARAN</h3>
+                        <p id="currentStepDesc" class="text-xs text-slate-300">Menganalisis CP untuk mengidentifikasi kompetensi, pengetahuan, keterampilan, dan karakter Panca Cinta.</p>
+                    </div>
+
+                    <div class="flex items-center gap-2 shrink-0">
+                        <button onclick="generateSingleStep()" id="btnGenerateStep" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-800 hover:from-emerald-500 hover:to-emerald-700 text-gold-200 border border-emerald-500/50 text-xs font-semibold flex items-center gap-2 shadow-md transition">
+                            <i class="fa-solid fa-bolt text-gold-400"></i>
+                            <span>Generate Tahap Ini</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Content Display Box -->
+                <div class="emerald-card rounded-2xl p-6 border border-emerald-700/50 shadow-2xl min-h-[420px] flex flex-col relative">
+
+                    <!-- Generation Loading Indicator Overlay -->
+                    <div id="loadingOverlay" class="hidden absolute inset-0 bg-emerald-950/90 backdrop-blur-md rounded-2xl z-30 flex flex-col items-center justify-center p-6 text-center">
+                        <div class="w-16 h-16 border-4 border-gold-500/30 border-t-gold-400 rounded-full animate-spin mb-4"></div>
+                        <h4 class="text-gold-300 font-bold text-lg mb-1" id="loadingStepTitle">Memproses Perangkat Pembelajaran...</h4>
+                        <p class="text-emerald-200 text-xs max-w-md" id="loadingStatusText">Sedang merajut konsep Deep Learning (Mindful, Meaningful, Joyful) dan Panca Cinta KBC...</p>
+                        
+                        <div class="w-full max-w-xs bg-emerald-900/80 rounded-full h-2 mt-4 overflow-hidden border border-emerald-700">
+                            <div id="progressBar" class="bg-gradient-to-r from-emerald-500 to-gold-400 h-full w-0 transition-all duration-300"></div>
+                        </div>
+                    </div>
+
+                    <!-- Output Actions Bar (Copy, Print, Export) -->
+                    <div class="flex items-center justify-between border-b border-emerald-800/80 pb-3 mb-4">
+                        <div class="flex items-center gap-2 text-xs text-emerald-300">
+                            <i class="fa-solid fa-file-signature text-gold-400"></i>
+                            <span>Hasil Dokumen Tergenerasi</span>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <button onclick="copyCurrentOutput()" class="px-2.5 py-1.5 rounded-lg text-xs bg-emerald-900/60 border border-emerald-700/60 text-slate-200 hover:text-gold-300 hover:border-gold-500 transition flex items-center gap-1.5">
+                                <i class="fa-regular fa-copy"></i>
+                                <span>Salin</span>
+                            </button>
+                            <button onclick="printCurrentOutput()" class="px-2.5 py-1.5 rounded-lg text-xs bg-emerald-900/60 border border-emerald-700/60 text-slate-200 hover:text-gold-300 hover:border-gold-500 transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-print"></i>
+                                <span>Cetak / PDF Lengkap</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Main Markdown / HTML Content Output -->
+                    <div id="outputDisplay" class="prose max-w-none text-slate-200 text-sm flex-1 overflow-y-auto leading-relaxed">
+                        <div class="flex flex-col items-center justify-center h-64 text-center text-slate-400 space-y-3">
+                            <div class="w-16 h-16 rounded-full bg-emerald-900/40 border border-emerald-700/40 flex items-center justify-center text-gold-400 text-2xl">
+                                <i class="fa-solid fa-feather-pointed"></i>
+                            </div>
+                            <p class="text-sm">Isi parameter di panel sebelah kiri, lalu klik <span class="text-gold-300 font-semibold">"Generate Tahap Ini"</span> atau <span class="text-gold-300 font-semibold">"Jalankan Semua Chain"</span>.</p>
+                            <button onclick="loadSamplePreset()" class="text-xs text-gold-400 underline hover:text-gold-300 transition">Klik di sini untuk mengisi contoh otomatis TK/RA</button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+        </div>
+    </main>
+
+    <!-- MODAL 1: Panduan Kurikulum Berbasis Cinta (KBC) -->
+    <div id="kbcInfoModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="emerald-card max-w-2xl w-full rounded-2xl border border-gold-500/40 p-6 shadow-2xl relative max-h-[85vh] flex flex-col">
+            <div class="flex items-center justify-between border-b border-emerald-800 pb-3 mb-4">
+                <div class="flex items-center gap-2 text-gold-300 font-bold text-lg">
+                    <i class="fa-solid fa-heart text-rose-500"></i>
+                    <span>Panduan Kurikulum Berbasis Cinta (KBC) & Panca Cinta</span>
+                </div>
+                <button onclick="closeModal('kbcInfoModal')" class="text-slate-400 hover:text-white text-lg px-2">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="text-xs text-slate-200 space-y-3 overflow-y-auto pr-2 leading-relaxed">
+                <p><strong>Kurikulum Berbasis Cinta (KBC)</strong> memadukan pendekatan keilmuan modern dengan nilai-nilai kasih sayang spiritual dan kebangsaan, diselaraskan dengan prinsip <strong>Deep Learning (Mindful, Meaningful, Joyful Learning)</strong> dari jenjang PAUD/TK/RA hingga SMA/SMK.</p>
+                
+                <h4 class="text-gold-300 font-bold text-sm mt-3">Lima Pilar (Panca Cinta):</h4>
+                <div class="space-y-2">
+                    <div class="p-2.5 bg-emerald-950/60 border border-emerald-800 rounded-xl">
+                        <strong class="text-amber-300">1. Cinta Allah dan Rasul-Nya:</strong> Menanamkan tauhid, kesadaran keimanan, keteladanan akhlak, serta menyadari ilmu sebagai bentuk ibadah dan tadabbur ciptaan Allah.
+                    </div>
+                    <div class="p-2.5 bg-emerald-950/60 border border-emerald-800 rounded-xl">
+                        <strong class="text-sky-300">2. Cinta Ilmu:</strong> Menumbuhkan rasa ingin tahu (curiosity), ketekunan, minat belajar sepanjang hayat, dan kebiasaan berpikir kritis reflektif.
+                    </div>
+                    <div class="p-2.5 bg-emerald-950/60 border border-emerald-800 rounded-xl">
+                        <strong class="text-rose-300">3. Cinta Diri dan Sesama:</strong> Mengembangkan empati, kesadaran diri (mindfulness), toleransi, kerja sama, saling menghormati, serta menjaga kesehatan fisik dan mental.
+                    </div>
+                    <div class="p-2.5 bg-emerald-950/60 border border-emerald-800 rounded-xl">
+                        <strong class="text-emerald-300">4. Cinta Alam dan Lingkungan:</strong> Kesadaran ekologis, menjaga kelestarian bumi, kepedulian terhadap flora dan fauna sebagai amanah pemakmuran bumi (khalifah).
+                    </div>
+                    <div class="p-2.5 bg-emerald-950/60 border border-emerald-800 rounded-xl">
+                        <strong class="text-red-300">5. Cinta Tanah Air:</strong> Kebanggaan nasional, kesadaran berkontribusi bagi kemajuan bangsa, persatuan, dan menghargai keberagaman nusantara.
+                    </div>
+                </div>
+
+                <h4 class="text-gold-300 font-bold text-sm mt-3">Prinsip Deep Learning:</h4>
+                <ul class="list-disc pl-5 space-y-1">
+                    <li><strong>Mindful (Berkesadaran):</strong> Siswa sadar penuh akan tujuan belajar, fokus, serta merefleksikan proses belajarnya.</li>
+                    <li><strong>Meaningful (Bermakna):</strong> Menghubungkan konsep teoritis dengan realitas kehidupan nyata dan solusi masalah sehari-hari.</li>
+                    <li><strong>Joyful (Menggembirakan):</strong> Pengalaman belajar yang positif, menantang tanpa intimidasi, aman secara emosional, dan penuh antusiasme.</li>
+                </ul>
+            </div>
+
+            <div class="border-t border-emerald-800 pt-3 mt-4 text-right">
+                <button onclick="closeModal('kbcInfoModal')" class="gold-button px-4 py-2 rounded-xl text-slate-950 font-bold text-xs">Paham & Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: Custom Notification Modal -->
+    <div id="notificationModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="emerald-card max-w-md w-full rounded-2xl border border-gold-500/40 p-5 shadow-2xl text-center space-y-3">
+            <div id="notifIcon" class="text-3xl text-gold-400">
+                <i class="fa-solid fa-circle-info"></i>
+            </div>
+            <h4 id="notifTitle" class="text-base font-bold text-gold-300">Pemberitahuan</h4>
+            <p id="notifMessage" class="text-xs text-slate-200">Pesan notifikasi...</p>
+            <div class="pt-2">
+                <button onclick="closeModal('notificationModal')" class="gold-button px-5 py-2 rounded-xl text-slate-950 font-bold text-xs">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Print Container -->
+    <div id="printContainer" class="hidden print:block p-8 font-sans">
+        <!-- Content will be injected when printing -->
+    </div>
+
+    <script>
+        /* ==========================================================================
+           1. Application State & Definitions
+           ========================================================================== */
+        
+        // Definition of the 9 Chain Steps
+        const STEPS = [
+            {
+                id: 1,
+                name: "Analisis CP",
+                title: "🌺 ANALISIS CAPAIAN PEMBELAJARAN",
+                badge: "Tahap 1 / 9",
+                desc: "Identifikasi kompetensi, pengetahuan, keterampilan, dan karakter Panca Cinta KBC dalam Capaian Pembelajaran.",
+                pancaTag: "Kompetensi & Karakter Panca Cinta",
+                promptGenerator: (ctx) => `
+Bertindak sebagai ahli perencanaan pembelajaran Kurikulum Merdeka & Kurikulum Berbasis Cinta (KBC).
+Analisis Capaian Pembelajaran berikut:
+- Satuan Pendidikan: ${ctx.namaSekolah}
+- Guru Pengampu: ${ctx.namaGuru} (NIP: ${ctx.nipGuru})
+- Mata Pelajaran/Elemen: ${ctx.mapel}
+- Jenjang/Kelas: ${ctx.jenjang} / ${ctx.kelas}
+- Topik: ${ctx.topik}
+- Capaian Pembelajaran (CP): "${ctx.cp}"
+- Fokus Panca Cinta KBC: ${ctx.fokusPancaCinta.join(', ')}
+
+Tugas:
+Identifikasi dan sajikan dalam TABEL Markdown yang mudah dipahami guru:
+1. Elemen/Kompetensi Utama yang Dituntut
+2. Pengetahuan / Pemahaman Inti (Knowledge)
+3. Keterampilan Kunci / Unjuk Kerja (Skills)
+4. Karakter & Sikap Panca Cinta yang Relevan (Hubungkan dengan: Cinta Allah & Rasul-Nya, Cinta Ilmu, Cinta Diri & Sesama, Cinta Alam & Lingkungan, atau Cinta Tanah Air).
+
+Catatan Khusus untuk TK/RA: Sesuaikan bahasa dengan tahapan perkembangan anak usia dini (bermain, motorik, eksplorasi sensorik, pembiasaan akhlak karimah).
+Sajikan analisis yang mendalam, inspiratif, dan siap dipakai guru.
+`
+            },
+            {
+                id: 2,
+                name: "Tujuan Pembelajaran",
+                title: "🌺 MENYUSUN TUJUAN PEMBELAJARAN (TP)",
+                badge: "Tahap 2 / 9",
+                desc: "Merumuskan Tujuan Pembelajaran spesifik, terukur, dan berorientasi pada pemahaman mendalam serta KBC.",
+                pancaTag: "Formulasi TP Berorientasi KBC",
+                promptGenerator: (ctx) => `
+Berdasarkan Capaian Pembelajaran (CP) untuk ${ctx.mapel} ${ctx.jenjang} ${ctx.kelas} di ${ctx.namaSekolah} dengan topik "${ctx.topik}":
+CP: "${ctx.cp}"
+Fokus Panca Cinta: ${ctx.fokusPancaCinta.join(', ')}
+
+Tugas:
+Susun daftar Tujuan Pembelajaran (TP) yang spesifik, terukur, relevan, dan berorientasi pada Pemahaman Mendalam (Deep Learning).
+Gunakan Kata Kerja Operasional yang disesuaikan dengan jenjang ${ctx.jenjang} (Untuk TK/RA gunakan bahasa pengamatan perkembangan anak).
+Untuk setiap TP, sertakan penanda integrasi Panca Cinta KBC (misal: [Cinta Allah & Rasul], [Cinta Alam], dll).
+
+Sajikan dalam bentuk poin-poin terstruktur dengan indikator ketercapaian sederhana.
+`
+            },
+            {
+                id: 3,
+                name: "Alur Tujuan Pembelajaran",
+                title: "🌺 ALUR TUJUAN PEMBELAJARAN (ATP)",
+                badge: "Tahap 3 / 9",
+                desc: "Menyusun alur pembelajaran secara logis dari konsep sederhana menuju kompleks.",
+                pancaTag: "Sekuens Logis & Kontinum KBC",
+                promptGenerator: (ctx) => `
+Buatkan Alur Tujuan Pembelajaran (ATP) berdasarkan CP dan TP materi "${ctx.topik}" untuk ${ctx.mapel} ${ctx.jenjang} ${ctx.kelas} di ${ctx.namaSekolah}.
+CP: "${ctx.cp}"
+
+Tugas:
+1. Susun tahapan alur secara logis (misal: Pembiasaan & Konstruksi Dasar -> Eksplorasi & Main Peran -> Aplikasi Bermakna -> Refleksi KBC & Aksi Nyata).
+2. Sajikan dalam TABEL ATP yang memuat:
+   - Tahap Alur & Alokasi Waktu / Pekan
+   - Tujuan Pembelajaran (TP)
+   - Kompetensi / Capaian Perkembangan yang Dikembangkan
+   - Dimensi Panca Cinta KBC & Deep Learning yang Diperkuat
+   - Alasan Rasional Urutan Pembelajaran
+`
+            },
+            {
+                id: 4,
+                name: "Modul Ajar Deep Learning",
+                title: "🌺 MODUL AJAR BERBASIS DEEP LEARNING & KBC",
+                badge: "Tahap 4 / 9",
+                desc: "Modul ajar utuh menerapkan prinsip pembelajaran mendalam (Mindful, Meaningful, Joyful).",
+                pancaTag: "Mindful, Meaningful, Joyful Learning",
+                promptGenerator: (ctx) => `
+Buatkan Modul Ajar lengkap untuk ${ctx.namaSekolah}, Mata Pelajaran/Elemen ${ctx.mapel} ${ctx.jenjang} ${ctx.kelas} dengan topik "${ctx.topik}".
+Guru Pengampu: ${ctx.namaGuru} (NIP: ${ctx.nipGuru})
+Kepala Sekolah: ${ctx.namaKepala} (NIP: ${ctx.nipKepala})
+
+Sertakan prinsip Deep Learning (Berkesadaran/Mindful, Bermakna/Meaningful, Menggembirakan/Joyful) dan integrasi Panca Cinta KBC: ${ctx.fokusPancaCinta.join(', ')}.
+
+Sistematika Modul Ajar:
+1. IDENTITAS MODUL (Nama Sekolah, Nama Guru, Kelas/Kelompok, Alokasi Waktu, Target Anak/Siswa, Panca Cinta Utama)
+2. TUJUAN PEMBELAJARAN / PETA KONSEP
+3. KEGIATAN PEMBELAJARAN:
+   - Pendahuluan (Mindful: Pagi Berkah, Doa, Zikir / Circle Time, Kesadaran Diri, Pertanyaan Pemantik)
+   - Kegiatan Inti (Meaningful & Joyful: Ragam Main / Eksplorasi, Kolaborasi, Integrasi Panca Cinta)
+   - Penutup (Refleksi KBC, Tanya Jawab Afektif & Apresiasi)
+4. ASESMEN PEMBELAJARAN (Ceklis Perkembangan/Formatif, Sumatif/Catatan Anekdot)
+5. DIFERENSIASI (Proses, Media/Konten, atau Produk/Ragam Main)
+6. MEDIA & SUMBER BELAJAR
+7. REFLEKSI GURU DAN ANAK/SISWA
+`
+            },
+            {
+                id: 5,
+                name: "Kegiatan Bermakna",
+                title: "🌺 KEGIATAN PEMBELAJARAN BERMAKNA",
+                badge: "Tahap 5 / 9",
+                desc: "Aktivitas nyata yang menghubungkan konsep materi dengan kehidupan nyata dan kepedulian Panca Cinta.",
+                pancaTag: "Koneksi Kontekstual Kehidupan Nyata",
+                promptGenerator: (ctx) => `
+Rancang aktivitas pembelajaran bermakna (Meaningful Learning) untuk materi "${ctx.topik}" (${ctx.mapel} ${ctx.jenjang} ${ctx.kelas} di ${ctx.namaSekolah}) yang menghubungkan konsep ilmu/pembiasaan dengan kehidupan nyata dan Panca Cinta (${ctx.fokusPancaCinta.join(', ')}).
+
+Buat 3 variasi aktivitas bermakna (Jika TK/RA: fokus pada aktivitasSentra/Ragam Main/Bermain Peran/Proyek Cilik):
+1. Aktivitas "Cinta & Kesadaran Diri/Alam" (Eksplorasi Lingkungan/Refleksi Diri)
+2. Aktivitas "Aksi Sosial & Kolaborasi" (Penerapan untuk Sesama/Teman/Keluarga)
+3. Aktivitas "Karya & Inovasi Kebangsaan/Ilmu"
+
+Untuk setiap aktivitas sertakan:
+- Nama Aktivitas
+- Deskripsi Tantangan Kontekstual
+- Langkah Pelaksanaan
+- Dampak Karakter Panca Cinta yang Ditumbuhkan
+`
+            },
+            {
+                id: 6,
+                name: "Skenario PBL",
+                title: "🌺 PEMBELAJARAN BERBASIS MASALAH (PBL / PROYEK)",
+                badge: "Tahap 6 / 9",
+                desc: "Skenario Problem Based Learning / Inquiry Proyek Anak dengan masalah kontekstual islami & lingkungan.",
+                pancaTag: "Sintaks PBL / Proyek Cilik",
+                promptGenerator: (ctx) => `
+Buatkan skenario Problem Based Learning (PBL) atau Pembelajaran Berbasis Proyek Utuh untuk materi "${ctx.topik}" ${ctx.mapel} ${ctx.jenjang} ${ctx.kelas} di ${ctx.namaSekolah}.
+
+Struktur Skenario PBL/Proyek:
+1. Narasi Masalah Kontekstual (Studi kasus sederhana/menarik yang erat dengan kehidupan anak/siswa dan nilai Panca Cinta).
+2. Pertanyaan Pemantik Masalah.
+3. Langkah-Langkah Kegiatan Sintaks PBL / Proyek:
+   - Orientasi pada Masalah (Mengenali masalah sekitar)
+   - Mengorganisasi Anak/Siswa untuk Belajar & Berdiskusi
+   - Membimbing Penyelidikan / Eksplorasi
+   - Mengembangkan dan Menyajikan Hasil Karya / Ragam Main
+   - Refleksi & Menganalisis Proses Pemecahan Masalah
+4. Produk Akhir (misal: karya loose parts, poster aksi, tanaman sahabat, karya tulis/gambar cinta alam).
+5. Asesmen Kinerja PBL / Rubrik Hasil Karya.
+`
+            },
+            {
+                id: 7,
+                name: "Pertanyaan Pemantik",
+                title: "🌺 10 PERTANYAAN PEMANTIK DEEP LEARNING",
+                badge: "Tahap 7 / 9",
+                desc: "Pertanyaan HOTS / Pemantik Rasa Ingin Tahu yang memantik empati dan kesadaran Panca Cinta.",
+                pancaTag: "Inquiry & Refleksi Kritis",
+                promptGenerator: (ctx) => `
+Buatkan tepat 10 Pertanyaan Pemantik untuk materi/topik "${ctx.topik}" (${ctx.mapel} ${ctx.jenjang} ${ctx.kelas} di ${ctx.namaSekolah}).
+
+Kriteria Pertanyaan:
+- Mendorong rasa ingin tahu mendalam (Curiosity)
+- Mengintegrasikan nilai Panca Cinta KBC (Cinta Allah, Ilmu, Diri/Sesama, Alam, Tanah Air)
+- Berorientasi High Order Thinking Skills / Pertanyaan Terbuka Anak
+- Memicu diskusi hangat dan refleksi spiritual-kontekstual.
+
+Sajikan nomor 1 s.d 10 lengkap dengan penjelasannya singkat tujuan dari pertanyaan tersebut.
+`
+            },
+            {
+                id: 8,
+                name: "LKPD / Lembar Kerja",
+                title: "🌺 LEMBAR KERJA PESERTA DIDIK (LKPD / LEMBAR MAIN)",
+                badge: "Tahap 8 / 9",
+                desc: "Draft LKPD eksploratif dengan petunjuk jelas, aktivitas penemuan, dan ruang refleksi KBC.",
+                pancaTag: "Eksplorasi & Refleksi Mandiri",
+                promptGenerator: (ctx) => `
+Buatkan Lembar Kerja Peserta Didik (LKPD) / Lembar Aktivitas Main Interaktif untuk materi "${ctx.topik}" ${ctx.mapel} ${ctx.jenjang} ${ctx.kelas} di ${ctx.namaSekolah}.
+
+Komponen LKPD / Lembar Aktivitas:
+1. Judul LKPD & Identitas Siswa/Anak (Nama, Kelompok/Kelas)
+2. Doa Pembuka & Pesan Panca Cinta KBC (Pengingat Niat Karena Allah/Cinta Ilmu)
+3. Tujuan Kegiatan
+4. Alat dan Bahan / Sumber Belajar (Bila TK/RA: sertakan loose parts/media alam)
+5. Langkah Kegiatan (Mengamati, Mengeksplorasi, Berdiskusi/Mencoba, Menyimpulkan)
+6. Pertanyaan / Lembar Lembar Kreativitas (Format visual/kotak/placeholder yang jelas)
+7. Lembar Refleksi Diri Panca Cinta KBC (Apa yang aku syukuri & pelajari hari ini?)
+`
+            },
+            {
+                id: 9,
+                name: "Asesmen Diagnostik",
+                title: "🌺 ASESMEN DIAGNOSTIK KOGNITIF & NON-KOGNITIF",
+                badge: "Tahap 9 / 9",
+                desc: "Soal / Panduan observasi diagnostik variatif beserta kunci/rubrik dan tindak lanjut.",
+                pancaTag: "Evaluasi Awal & Pemetaan Diri",
+                promptGenerator: (ctx) => `
+Buatkan Asesmen Diagnostik Awal untuk materi "${ctx.topik}" (${ctx.mapel} ${ctx.jenjang} ${ctx.kelas} di ${ctx.namaSekolah}).
+
+Komponen Asesmen:
+1. 3 Pertanyaan / Instrumen Observasi Non-Kognitif (Kondisi emosi, minat, kecenderungan gaya belajar, dan kesiapan Panca Cinta).
+2. 7 Soal Diagnostik Kognitif Pemahaman Awal / Checklist Observasi Perkembangan.
+3. Kunci Jawaban / Panduan Rubrik Penilaian.
+4. Rubrik Interpretasi Hasil (Tingkat Paham Utuh / Berkembang Sesuai Harapan, Paham Sebagian / Mulai Berkembang, Belum Paham / Perlu Bimbingan) serta Rekomendasi Tindak Lanjut Pembelajaran Diferensiasi.
+`
+            }
+        ];
+
+        // Store outputs for each step
+        let generatedOutputs = {};
+        let currentStepIndex = 0;
+        let isProcessingChain = false;
+
+        /* ==========================================================================
+           2. Initialization & UI Setup
+           ========================================================================== */
+        
+        window.onload = function() {
+            renderStepsTabNav();
+            updateStepHeader();
+            updateKelasOptions();
+        };
+
+        function updateKelasOptions() {
+            const jenjang = document.getElementById('inputJenjang').value;
+            const kelasSelect = document.getElementById('inputKelas');
+            kelasSelect.innerHTML = '';
+
+            let options = [];
+            if (jenjang === 'TK') {
+                options = ['Kelompok A (4-5 Tahun)', 'Kelompok B (5-6 Tahun)', 'Kelompok Bermain (KB / 3-4 Thn)'];
+            } else if (jenjang === 'SD') {
+                options = ['Kelas 1', 'Kelas 2', 'Kelas 3', 'Kelas 4', 'Kelas 5', 'Kelas 6'];
+            } else if (jenjang === 'SMP') {
+                options = ['Kelas 7', 'Kelas 8', 'Kelas 9'];
+            } else if (jenjang === 'SMA' || jenjang === 'SMK') {
+                options = ['Kelas 10', 'Kelas 11', 'Kelas 12'];
+            }
+
+            options.forEach(opt => {
+                const el = document.createElement('option');
+                el.value = opt;
+                el.textContent = opt;
+                kelasSelect.appendChild(el);
+            });
+        }
+
+        function renderStepsTabNav() {
+            const nav = document.getElementById('stepsTabNav');
+            nav.innerHTML = '';
+
+            STEPS.forEach((step, idx) => {
+                const isActive = idx === currentStepIndex;
+                const isGenerated = !!generatedOutputs[step.id];
+
+                const btn = document.createElement('button');
+                btn.onclick = () => switchStep(idx);
+                btn.className = `px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 border transition ${
+                    isActive 
+                    ? 'bg-gradient-to-r from-emerald-700 to-emerald-900 border-gold-500 text-gold-300 shadow-md' 
+                    : 'bg-emerald-950/60 border-emerald-800/80 text-slate-300 hover:border-emerald-600 hover:text-slate-100'
+                }`;
+
+                let iconStatus = `<span class="w-2 h-2 rounded-full ${isGenerated ? 'bg-gold-400' : 'bg-slate-600'}"></span>`;
+                if (isActive) iconStatus = `<i class="fa-solid fa-angles-right text-gold-400 text-[10px]"></i>`;
+
+                btn.innerHTML = `${iconStatus} <span>${idx+1}. ${step.name}</span>`;
+                nav.appendChild(btn);
+            });
+        }
+
+        function switchStep(index) {
+            currentStepIndex = index;
+            renderStepsTabNav();
+            updateStepHeader();
+            renderOutputDisplay();
+        }
+
+        function updateStepHeader() {
+            const step = STEPS[currentStepIndex];
+            document.getElementById('currentStepBadge').textContent = step.badge;
+            document.getElementById('currentStepPancaCintaTag').textContent = `🌺 ${step.pancaTag}`;
+            document.getElementById('currentStepTitle').textContent = step.title;
+            document.getElementById('currentStepDesc').textContent = step.desc;
+        }
+
+        function renderOutputDisplay() {
+            const step = STEPS[currentStepIndex];
+            const outputArea = document.getElementById('outputDisplay');
+
+            if (generatedOutputs[step.id]) {
+                // Parse markdown to HTML
+                outputArea.innerHTML = marked.parse(generatedOutputs[step.id]);
+            } else {
+                outputArea.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-64 text-center text-slate-400 space-y-3">
+                        <div class="w-16 h-16 rounded-full bg-emerald-900/40 border border-emerald-700/40 flex items-center justify-center text-gold-400 text-2xl">
+                            <i class="fa-solid fa-feather-pointed"></i>
+                        </div>
+                        <p class="text-sm">Belum ada hasil tergenerasi untuk <strong class="text-gold-300">${step.name}</strong>.</p>
+                        <p class="text-xs text-slate-400">Klik tombol <span class="text-gold-300 font-semibold">"Generate Tahap Ini"</span> atau jalankan chain otomatis.</p>
+                    </div>
+                `;
+            }
+        }
+
+        /* ==========================================================================
+           3. Preset & Input Validation
+           ========================================================================== */
+
+        function loadSamplePreset() {
+            document.getElementById('inputNamaSekolah').value = "RA Perwanida Al-Ikhlas";
+            document.getElementById('inputNamaGuru').value = "Siti Rahmah, S.Pd.I";
+            document.getElementById('inputNipGuru').value = "19880512 201503 2 004";
+            document.getElementById('inputNamaKepala').value = "Hj. Nurhayati, M.Pd";
+            document.getElementById('inputNipKepala').value = "19750820 200212 2 001";
+
+            document.getElementById('inputMapel').value = "Nilai Agama & Budi Pekerti / Jati Diri";
+            document.getElementById('inputJenjang').value = "TK";
+            updateKelasOptions();
+            document.getElementById('inputKelas').value = "Kelompok B (5-6 Tahun)";
+            document.getElementById('inputTopik').value = "Aku Sayang Tumbuhan Ciptaan Allah";
+            document.getElementById('inputCP').value = "Anak mengenal dan mencintai Allah SWT melalui ciptaan-Nya, menunjukkan sikap menyayangi makhluk hidup seperti tumbuhan di lingkungan sekolah, serta terbiasa merawat tanaman sebagai wujud rasa syukur dan kepedulian terhadap alam.";
+            
+            showNotification("Data Contoh TK/RA Berhasil Dimuat", "Silakan klik 'Generate Tahap Ini' atau 'Jalankan Semua Chain' untuk memulai.", "fa-circle-check text-emerald-400");
+        }
+
+        function getFormContext() {
+            const namaSekolah = document.getElementById('inputNamaSekolah').value.trim() || "RA / Sekolah KBC";
+            const namaGuru = document.getElementById('inputNamaGuru').value.trim() || "Guru Pengampu";
+            const nipGuru = document.getElementById('inputNipGuru').value.trim() || "-";
+            const namaKepala = document.getElementById('inputNamaKepala').value.trim() || "Kepala RA / Sekolah";
+            const nipKepala = document.getElementById('inputNipKepala').value.trim() || "-";
+
+            const mapel = document.getElementById('inputMapel').value.trim();
+            const jenjang = document.getElementById('inputJenjang').value;
+            const kelas = document.getElementById('inputKelas').value;
+            const topik = document.getElementById('inputTopik').value.trim();
+            const cp = document.getElementById('inputCP').value.trim();
+
+            const pancaCheckboxes = document.querySelectorAll('input[name="pancaCintaFocus"]:checked');
+            const fokusPancaCinta = Array.from(pancaCheckboxes).map(cb => cb.value);
+
+            if (!mapel || !topik || !cp) {
+                showNotification("Parameter Belum Lengkap", "Harap isi Mata Pelajaran/Elemen, Topik, dan Teks CP terlebih dahulu.", "fa-triangle-exclamation text-amber-400");
+                return null;
+            }
+
+            if (fokusPancaCinta.length === 0) {
+                showNotification("Panca Cinta Belum Dipilih", "Pilih sekurang-kurangnya 1 dimensi Panca Cinta KBC.", "fa-triangle-exclamation text-amber-400");
+                return null;
+            }
+
+            return { namaSekolah, namaGuru, nipGuru, namaKepala, nipKepala, mapel, jenjang, kelas, topik, cp, fokusPancaCinta };
+        }
+
+        /* ==========================================================================
+           4. Gemini API Integration & Generation
+           ========================================================================== */
+
+        async function callGeminiAPI(promptText) {
+            const systemInstruction = `
+Kamu adalah Pakar Instructional Design Pendidikan Islam, Pengembang Kurikulum Berbasis Cinta (KBC), serta Ahli Deep Learning (Mindful, Meaningful, Joyful Learning) untuk jenjang PAUD/TK/RA, SD/MI, SMP/MTs, dan SMA/MA/SMK.
+Tugasmu adalah menghasilkan dokumen perangkat pembelajaran yang kaya, bermakna, Islami, elegan, dan sangat aplikatif untuk guru Indonesia.
+Selalu sertakan pesan moral spiritual Panca Cinta (Cinta Allah & Rasul-Nya, Cinta Ilmu, Cinta Diri & Sesama, Cinta Alam & Lingkungan, Cinta Tanah Air) secara relevan dan tidak dipaksakan.
+Format keluaran HARUS menggunakan Markdown yang rapi (gunakan tabel jika diminta, header H2/H3 yang jelas, dan cetak tebal).
+`;
+
+            const apiKey = ""; // Canvas handles API key runtime insertion automatically
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+            const payload = {
+                contents: [
+                    {
+                        parts: [{ text: promptText }]
+                    }
+                ],
+                systemInstruction: {
+                    parts: [{ text: systemInstruction }]
+                }
+            };
+
+            // Implement exponential backoff retry
+            let retries = 3;
+            let delay = 1000;
+
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (text) return text;
+                    throw new Error("Respon kosong dari model.");
+                } catch (err) {
+                    if (i === retries - 1) throw err;
+                    await new Promise(res => setTimeout(res, delay));
+                    delay *= 2;
+                }
+            }
+        }
+
+        async function generateSingleStep() {
+            const ctx = getFormContext();
+            if (!ctx) return;
+
+            const step = STEPS[currentStepIndex];
+            showLoading(true, step.title, `Sedang merajut modul ${step.name} berbasis KBC Deep Learning...`, 50);
+
+            try {
+                const prompt = step.promptGenerator(ctx);
+                const resultText = await callGeminiAPI(prompt);
+                
+                generatedOutputs[step.id] = resultText;
+                renderStepsTabNav();
+                renderOutputDisplay();
+                showNotification("Berhasil Tergenerasi", `${step.name} telah berhasil disusun.`, "fa-circle-check text-emerald-400");
+            } catch (err) {
+                console.error(err);
+                showNotification("Gagal Memproses", "Terjadi kesalahan saat menghubungkan ke kecerdasan buatan. Coba beberapa saat lagi.", "fa-circle-xmark text-rose-500");
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function startChainProcess() {
+            const ctx = getFormContext();
+            if (!ctx) return;
+
+            isProcessingChain = true;
+            showLoading(true, "Memulai Chain Process 9 Langkah", "Menyusun seluruh perangkat pembelajaran...", 0);
+
+            for (let i = 0; i < STEPS.length; i++) {
+                currentStepIndex = i;
+                renderStepsTabNav();
+                updateStepHeader();
+
+                const step = STEPS[i];
+                const progressPercent = Math.round(((i + 1) / STEPS.length) * 100);
+
+                updateLoadingProgress(
+                    step.title, 
+                    `Langkah ${i+1} dari 9: Menyusun ${step.name}...`, 
+                    progressPercent
+                );
+
+                try {
+                    const prompt = step.promptGenerator(ctx);
+                    const resultText = await callGeminiAPI(prompt);
+                    generatedOutputs[step.id] = resultText;
+                    renderOutputDisplay();
+                } catch (err) {
+                    console.error(`Error on step ${step.id}:`, err);
+                    showNotification("Chain Terhenti", `Terjadi kendala pada langkah ${step.name}. Anda dapat melanjutkan per-tahap secara manual.`, "fa-triangle-exclamation text-amber-400");
+                    break;
+                }
+            }
+
+            isProcessingChain = false;
+            showLoading(false);
+            renderStepsTabNav();
+            showNotification("Chain Selesai!", "Seluruh 9 perangkat pembelajaran KBC Deep Learning telah siap.", "fa-trophy text-gold-400");
+        }
+
+        /* ==========================================================================
+           5. Utility Functions (UI Modals, Loading, Copy & Print)
+           ========================================================================== */
+
+        function showLoading(show, title = "", status = "", percent = 0) {
+            const overlay = document.getElementById('loadingOverlay');
+            if (show) {
+                overlay.classList.remove('hidden');
+                updateLoadingProgress(title, status, percent);
+            } else {
+                overlay.classList.add('hidden');
+            }
+        }
+
+        function updateLoadingProgress(title, status, percent) {
+            document.getElementById('loadingStepTitle').textContent = title;
+            document.getElementById('loadingStatusText').textContent = status;
+            document.getElementById('progressBar').style.width = `${percent}%`;
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function showNotification(title, message, iconClass = "fa-circle-info") {
+            document.getElementById('notifTitle').textContent = title;
+            document.getElementById('notifMessage').textContent = message;
+            document.getElementById('notifIcon').innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
+            openModal('notificationModal');
+        }
+
+        function copyCurrentOutput() {
+            const step = STEPS[currentStepIndex];
+            const content = generatedOutputs[step.id];
+
+            if (!content) {
+                showNotification("Belum Ada Data", "Tidak ada konten untuk disalin.", "fa-triangle-exclamation text-amber-400");
+                return;
+            }
+
+            // Copy markdown text to clipboard using document.execCommand
+            const textarea = document.createElement('textarea');
+            textarea.value = content;
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showNotification("Teks Disalin!", `Konten ${step.name} berhasil disalin ke clipboard dalam format Markdown.`, "fa-circle-check text-emerald-400");
+            } catch (err) {
+                showNotification("Gagal Menyalin", "Tidak dapat mengakses clipboard.", "fa-circle-xmark text-rose-500");
+            }
+            document.body.removeChild(textarea);
+        }
+
+        function printCurrentOutput() {
+            const step = STEPS[currentStepIndex];
+            const content = generatedOutputs[step.id];
+
+            if (!content) {
+                showNotification("Belum Ada Data", "Tidak ada konten untuk dicetak.", "fa-triangle-exclamation text-amber-400");
+                return;
+            }
+
+            const namaSekolah = document.getElementById('inputNamaSekolah').value.trim() || "Lembaga Pendidikan KBC";
+            const namaGuru = document.getElementById('inputNamaGuru').value.trim() || "....................";
+            const nipGuru = document.getElementById('inputNipGuru').value.trim() || "-";
+            const namaKepala = document.getElementById('inputNamaKepala').value.trim() || "....................";
+            const nipKepala = document.getElementById('inputNipKepala').value.trim() || "-";
+
+            const mapel = document.getElementById('inputMapel').value || "-";
+            const jenjang = document.getElementById('inputJenjang').value;
+            const kelas = document.getElementById('inputKelas').value;
+            const topik = document.getElementById('inputTopik').value || "-";
+
+            const printArea = document.getElementById('printContainer');
+            printArea.innerHTML = `
+                <div style="text-align: center; border-bottom: 2px solid #064e3b; padding-bottom: 12px; margin-bottom: 20px;">
+                    <h1 style="font-size: 20px; font-weight: bold; color: #064e3b; margin: 0;">${namaSekolah.toUpperCase()}</h1>
+                    <h2 style="font-size: 16px; font-weight: bold; color: #b45309; margin: 4px 0 0 0;">PERANGKAT PEMBELAJARAN KURIKULUM BERBASIS CINTA (KBC)</h2>
+                    <h3 style="font-size: 14px; font-weight: font-semibold; color: #1e3a8a; margin: 4px 0 0 0;">${step.title}</h3>
+                    <p style="font-size: 11px; color: #4b5563; margin-top: 6px;">
+                        Mata Pelajaran/Elemen: <strong>${mapel}</strong> | Kelas: <strong>${jenjang} - ${kelas}</strong> | Topik: <strong>${topik}</strong>
+                    </p>
+                </div>
+
+                <div class="prose max-w-none text-black text-sm">
+                    ${marked.parse(content)}
+                </div>
+
+                <!-- Official Signature Block -->
+                <div style="margin-top: 40px; display: flex; justify-content: space-between; text-align: center; font-size: 12px; font-family: sans-serif; page-break-inside: avoid;">
+                    <div style="width: 45%;">
+                        <p>Mengetahui,</p>
+                        <p><strong>Kepala ${namaSekolah}</strong></p>
+                        <br><br><br><br>
+                        <p style="margin-bottom: 2px;"><strong><u>${namaKepala}</u></strong></p>
+                        <p style="margin-top: 0; font-size: 11px;">NIP. ${nipKepala}</p>
+                    </div>
+                    <div style="width: 45%;">
+                        <p>Guru Kelas / Pengampu,</p>
+                        <p><strong>${namaSekolah}</strong></p>
+                        <br><br><br><br>
+                        <p style="margin-bottom: 2px;"><strong><u>${namaGuru}</u></strong></p>
+                        <p style="margin-top: 0; font-size: 11px;">NIP. ${nipGuru}</p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px; text-align: right; font-size: 10px; color: #6b7280; border-top: 1px solid #e5e7eb; padding-top: 8px;">
+                    Dicetak melalui Aplikasi Generator Perangkat Pembelajaran KBC & Deep Learning
+                </div>
+            `;
+
+            window.print();
+        }
+
+        function resetAllData() {
+            generatedOutputs = {};
+            currentStepIndex = 0;
+            renderStepsTabNav();
+            updateStepHeader();
+            renderOutputDisplay();
+            showNotification("Data Direset", "Seluruh hasil dokumen telah dibersihkan.", "fa-circle-check text-emerald-400");
+        }
+    </script>
+</body>
+</html>
